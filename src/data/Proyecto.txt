@@ -1,0 +1,40 @@
+Alumno: Magali Lion
+Comisión: 76655
+Proyecto: Primera Entrega - Backend con Node.js y Express
+
+ Rutas Disponibles
+Productos (/api/products)
+Método	Ruta	Descripción
+GET	/api/products	Lista todos los productos
+GET	/api/products/:pid	Obtiene un producto por ID
+POST	/api/products	Crea un nuevo producto
+PUT	/api/products/:pid	Actualiza un producto
+DELETE	/api/products/:pid	Elimina un producto
+Formato de producto:
+{
+  "title": "Zapatillas",
+  "description": "Zapatillas deportivas",
+  "code": "ZAP001",
+  "price": 25000,
+  "status": true,
+  "stock": 10,
+  "category": "Calzado",
+  "thumbnails": ["img/zapatillas.jpg"]
+}
+________________________________________
+Carritos (/api/carts)
+Método	Ruta	Descripción
+POST	/api/carts	Crea un nuevo carrito
+GET	/api/carts/:cid	Obtiene los productos del carrito
+POST	/api/carts/:cid/product/:pid	Agrega un producto al carrito (aumenta cantidad si ya existe)
+Estructura de carrito:
+{
+  "id": "uuid",
+  "products": [
+    { "product": "id_producto", "quantity": 2 }
+  ]
+}
+________________________________________
+Los datos se almacenan en:
+src/data/products.json
+src/data/carts.json
