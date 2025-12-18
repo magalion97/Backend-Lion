@@ -41,10 +41,9 @@ export default class ProductManager {
     const index = products.findIndex(p => p.id === id);
     if (index === -1) return null;
 
-    const updated = { ...products[index], ...updates, id: products[index].id };
-    products[index] = updated;
+    products[index] = { ...products[index], ...updates, id };
     await this.#writeFile(products);
-    return updated;
+    return products[index];
   }
 
   async deleteProduct(id) {

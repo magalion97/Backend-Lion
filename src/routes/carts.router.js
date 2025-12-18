@@ -1,29 +1,69 @@
 import { Router } from "express";
-import CartManager from "../managers/CartManager.js";
+import {
+  createCartService,
+  getCartByIdService,
+  addProductToCartService,
+  deleteProductFromCartService,
+  updateCartService,
+  updateProductQuantityService,
+  clearCartService
+} from "../services/cart.service.js";
 
 const router = Router();
-const cartManager = new CartManager("./src/data/carts.json");
 
-// POST /api/carts
+// Crear carrito
 router.post("/", async (req, res) => {
-  const cart = await cartManager.createCart();
-  res.status(201).json(cart);
+  const cart = await createCartService();
+  res.json({ status: "success", payload: cart });
 });
 
-// GET /api/carts/:cid
+// Obtener carrito con populate
 router.get("/:cid", async (req, res) => {
-  const { cid } = req.params;
-  const cart = await cartManager.getCartById(cid);
-  if (!cart) return res.status(404).json({ error: "Carrito no encontrado" });
-  res.json(cart.products);
+  const cart = await getCartByIdService(req.params.cid);
+  res.json({ status: "success", payload: cart });
 });
 
-// POST /api/carts/:cid/product/:pid
-router.post("/:cid/product/:pid", async (req, res) => {
-  const { cid, pid } = req.params;
-  const updatedCart = await cartManager.addProductToCart(cid, pid);
-  if (!updatedCart) return res.status(404).json({ error: "Carrito o producto no encontrado" });
-  res.json(updatedCart);
+// Agregar producto
+router.post("/:cid/products/:pid", async (req, res) => {
+  const cart = await addProductToCartService(
+    req.params.cid,
+    req.params.pid
+  );
+  res.json({ status: "success", payload: cart });
+});
+
+// ❌ ELIMINAR PRODUCTO
+router.delete("/:cid/products/:pid", async (req, res) => {
+  const cart = await deleteProductFromCartService(
+    req.params.cid,
+    req.params.pid
+  );
+  res.json({ status: "success", payload: cart });
+});
+
+// 🔁 ACTUALIZAR TODO EL CARRITO
+router.put("/:cid", async (req, res) => {
+  const cart = await updateCartService(
+    req.params.cid,
+    req.body.products
+  );
+  res.json({ status: "success", payload: cart });
+});
+
+// 🔢 ACTUALIZAR CANTIDAD
+router.put("/:cid/products/:pid", async (req, res) => {
+  const cart = await updateProductQuantityService(
+    req.params.cid,
+    req.params.pid,
+    req.body.quantity
+  );
+  res.json({ status: "success", payload: cart });
+});
+
+// 🧹 VACIAR CARRITO
+router.delete("/:cid", async (req, res) => {
+  const cart = await clearCartService(req.params.cid);
+  res.json({ status: "success", payload: cart });
 });
 
 export default router;
